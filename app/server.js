@@ -18,7 +18,7 @@ module.exports = class Application {
 
     createServer(PORT) {
         const http = require("http");
-        const server = this.createServer(this.#app);
+        const server = http.createServer(this.#app);
         server.listen(PORT, () => {
             console.log(`Server run on http://localhost:${PORT}`)
         })
@@ -26,9 +26,16 @@ module.exports = class Application {
 
     configDatabase(DB_URL) {
         const mongoose = require("mongoose")
-        mongoose.connect(DB_URL, (error) => {
-            if(error) throw error
-            return console.log("Connect to DB successful!")
+        mongoose.connect(DB_URL)
+        .catch (error => console.log(error));
+        return console.log("Connect to DB")
+    }
+
+    createRoutes() {
+        this.#app.get("/", (req, res, next) => {
+            return res.json({ 
+                message: "This is a new express application"
+            })
         })
     }
 
@@ -47,14 +54,6 @@ module.exports = class Application {
                 status,
                 success: false,
                 message
-            })
-        })
-    }
-
-    createRoutes() {
-        this.#app.get("/", (req, res, next) => {
-            return res.json({ 
-                message: "This is a new express application"
             })
         })
     }
